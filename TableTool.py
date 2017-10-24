@@ -70,9 +70,6 @@ class TableTool:
 	self.t1 = None
 	self.t2 = None
 
-	# Output file
-        self.ofd = None
-
 	self.lfd = sys.stderr	# log file
 
         #
@@ -92,15 +89,6 @@ class TableTool:
             self.parser.add_option("-1", dest="in1", default="-",
                 metavar="SRC",
                 help="Specifies input source. Default='-' (read from stdin).")
-
-        if self.ninputs > 1:
-            self.parser.add_option("-2", dest="in2", default="-",
-                metavar="SRC",
-                help="Specifies input source #2. Default='-' (read from stdin).")
-
-        self.parser.add_option("-o","--out-file", dest="outFile", default="-",
-            metavar="FILE",
-            help="Specifies output file [default='-',write to stdout]")
 
 	self.parser.add_option("-l", "--log-file", dest="logFile", default=None,
 	    metavar="FILE",

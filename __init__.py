@@ -14,7 +14,7 @@ from TRead         import TRead
 from TSort         import TSort
 from TUnion        import TUnion
 from TXpand        import TXpand
-#from TWrite        import TWrite
+from TWrite        import TWrite
 
 #----------------------------------------------------------------------
 # Maps string to operator classes
@@ -33,6 +33,7 @@ OPERATION_MAP = {
     'ts' : TSort,
     'tu' : TUnion,
     'tx' : TXpand,
+    'tw' : TWrite,
     }
 
 def die(message = None, exitCode = -1):

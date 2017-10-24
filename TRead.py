@@ -11,9 +11,6 @@ class TRead(TableTool):
 	self.ncols = 0
 
 	#
-	self.lfd = sys.stderr
-
-	#
 	self.separatorChar	 = TAB
 	self.commentChar	= HASH
 
@@ -97,10 +94,10 @@ class TRead(TableTool):
 	    if self.ncols == 0:
 		self.ncols = len(self.currentRow)
 	    elif self.ncols != len(self.currentRow):
-		self.lfd.write(\
+		self.debug(\
 		  "WARNING: wrong number of columns (%d) in line %d. Expected %d. \n" % \
 		  (len(self.currentRow), self.currentLineNum, self.ncols))
-		self.lfd.write(self.currentLine)
+		self.debug(self.currentLine)
 		#self.currentLine = self.fileDesc.readline()
 		#continue
 
