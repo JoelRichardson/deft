@@ -58,7 +58,6 @@ from common import *
 class TJoin( TableTool ):
     USAGE=__doc__
     def __init__(self,argv):
-	TableTool.__init__(self,2)
 
 	self.jcols1 = []
 	self.jcols2 = []
@@ -72,7 +71,8 @@ class TJoin( TableTool ):
 	self.swappedInputs = False
 	self.selfJoin = False
 	self.inner = None
-	self.parseCmdLine(argv)
+
+	TableTool.__init__(self,2,argv)
 
     #---------------------------------------------------------
     def initArgParser(self):

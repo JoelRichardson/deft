@@ -16,11 +16,10 @@ from common import *
 class TPartition( TableTool ):
     USAGE=__doc__
     def __init__(self,argv):
-	TableTool.__init__(self,1)
 	self.pcols = []
 	self.fname2ofd = {}
 	self.pval2fname = {}
-	self.parseCmdLine(argv)
+	TableTool.__init__(self,1,argv)
 
     #---------------------------------------------------------
     def initArgParser(self):

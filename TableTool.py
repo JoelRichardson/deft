@@ -57,7 +57,7 @@ HASH	= "#"
 #
 class TableTool:
     USAGE="usage: %prog [options] expression expression ... < input > output"
-    def __init__(self, ninputs ):
+    def __init__(self, ninputs, argv):
 	self.parser = OptionParser(self.USAGE)
 	self.args = None
 	self.options = None
@@ -74,6 +74,11 @@ class TableTool:
         self.ofd = None
 
 	self.lfd = sys.stderr	# log file
+
+        #
+	self.initArgParser()
+	(self.options, self.args) = self.parser.parse_args(argv)
+        self.processOptions()
 
     #---------------------------------------------------------
     # All TableTools are iterators.
@@ -100,15 +105,6 @@ class TableTool:
 	self.parser.add_option("-l", "--log-file", dest="logFile", default=None,
 	    metavar="FILE",
 	    help="Specifies log file [default=write to stderr]")
-
-    #---------------------------------------------------------
-    # Parses the command line. Options and positional args
-    # assigned to self.options and self.args, resp.
-    #
-    def parseCmdLine(self, argv):
-	self.initArgParser()
-	(self.options, self.args) = self.parser.parse_args(argv)
-        self.processOptions()
 
     #---------------------------------------------------------
     def processOptions(self):

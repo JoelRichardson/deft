@@ -6,7 +6,6 @@ from TableTool import TableTool
 class TRead(TableTool):
     USAGE=__doc__
     def __init__(self, argv):
-        TableTool.__init__(self, 0)
 	#
 	# 
 	self.ncols = 0
@@ -28,7 +27,7 @@ class TRead(TableTool):
 	self.currentRow = None
 	self.currentRowNum = 0
         #
-        self.parseCmdLine(argv)
+        TableTool.__init__(self, 0,argv)
 
     #---------------------------------------------------------
     def initArgParser(self):

@@ -76,7 +76,6 @@ _ALL_FUNCS = [COUNT,LIST,FIRST,LAST] + _STAT_FUNCS
 class TAggregate( TableTool) :
     USAGE=__doc__
     def __init__(self,argv):
-	TableTool.__init__(self,1)
 	self.maxColIndex = 0
 	self.currentLine = None
 	self.currentLineNum = 0
@@ -90,7 +89,7 @@ class TAggregate( TableTool) :
 
 	self.partitions = {}
 
-	self.parseCmdLine(argv)
+	TableTool.__init__(self,1,argv)
 
     #---------------------------------------------------------
     # Parses the command line. Options and positional args

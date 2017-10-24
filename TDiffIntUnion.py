@@ -9,11 +9,10 @@ from common import *
 #
 class TDiffIntUnion( TableTool ):
     def __init__(self,argv):
-	TableTool.__init__(self,2)
 	self.kcols1 = []
 	self.kcols2 = []
 	self.t2Keys = {}
-	self.parseCmdLine(argv)
+	TableTool.__init__(self,2,argv)
 
     #---------------------------------------------------------
     def initArgParser(self):

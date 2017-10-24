@@ -30,13 +30,12 @@ BUCKETS = [
 class TBucketize( TableTool ):
     USAGE=__doc__
     def __init__(self,argv):
-	TableTool.__init__(self,1)
 	self.kcols1 = []
 	self.kcols2 = []
 	self.rows = []
 	self.graph = None
 	self.bucketFiles = {}
-	self.parseCmdLine(argv)
+	TableTool.__init__(self,1,argv)
 
     #---------------------------------------------------------
     def initArgParser(self):
