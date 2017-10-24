@@ -42,7 +42,6 @@ import math
 from optparse import OptionParser
 import time
 
-from TableFileIterator import TableFileIterator
 from common import *
 
 #------------------------------------------------------------
