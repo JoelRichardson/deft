@@ -5,17 +5,18 @@ Computes the transitive closure over a directed binary relation.
 The binary relation is defined by a pair of columns in the input, parent and child.
 The output is a two-column table containing the columns ancestor and descendant.
 '''
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 
-class TClosure ( UnaryTableTool ) :
+class TClosure ( TableTool ) :
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.parseCmdLine(argv)
 
     #---------------------------------------------------------
     def initArgParser(self):
+        TableTool.initArgParser(self)
         self.parser.add_option("-p", "--parent", dest="parent", 
           metavar="COL",
           type="int",
@@ -30,10 +31,10 @@ class TClosure ( UnaryTableTool ) :
         # is symmetric ior not. In a symmetric tc the output contains 
         # contains (x,x) for each x. 
 
-        UnaryTableTool.initArgParser(self)
 
     #---------------------------------------------------------
     def processOptions(self):
+      TableTool.processOptions(self)
       if self.options.parent is None:
         self.parser.error("No parent index specified.")
       if self.options.child is None:

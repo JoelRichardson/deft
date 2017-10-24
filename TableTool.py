@@ -84,28 +84,15 @@ class TableTool:
     #---------------------------------------------------------
     def initArgParser(self):
 
-	self.parser.add_option("-1","-f","--file1", dest="file1", default="-",
-	    metavar="FILE",
-	    help="Specifies file for input table [default='-', read from stdin]")
+        if self.ninputs > 0:
+            self.parser.add_option("-1", dest="in1", default="-",
+                metavar="SRC",
+                help="Specifies input source. Default='-' (read from stdin).")
 
-	self.parser.add_option("--s1", "--separator1", dest="sep1", default=TAB,
-	    metavar="CHAR",
-	    help="Separator character (default=TAB).")
-	self.parser.add_option("--c1", "--comment1", dest="com1", default=HASH,
-	    metavar="CHAR",
-	    help="Comment character (default=HASH). " + \
-	    	 "Lines beginning with CHAR are skipped.")
-	if self.ninputs == 2:
-	    self.parser.add_option("-2","--file2", dest="file2", default="-",
-		metavar="FILE",
-		help="Specifies file for table T2 [default='-', read from stdin]")
-	    self.parser.add_option("--s2","--separator2", dest="sep2", default=TAB,
-		metavar="CHAR",
-		help="Separator character for file 2 (default=TAB).")
-	    self.parser.add_option("--c2","--comment2", dest="com2", default=HASH,
-		metavar="CHAR",
-		help="Comment character for file 2 (default=HASH). " + \
-		     "Lines beginning with CHAR are skipped.")
+        if self.ninputs > 1:
+            self.parser.add_option("-2", dest="in2", default="-",
+                metavar="SRC",
+                help="Specifies input source #2. Default='-' (read from stdin).")
 
         self.parser.add_option("-o","--out-file", dest="outFile", default="-",
             metavar="FILE",
@@ -122,56 +109,16 @@ class TableTool:
     def parseCmdLine(self, argv):
 	self.initArgParser()
 	(self.options, self.args) = self.parser.parse_args(argv)
-	self.validate()
-
-    #---------------------------------------------------------
-    # Check options, open files, and generally get set up.
-    #
-    def validate(self):
-	try:
-	    self.openFiles()
-	    self.processOptions()
-	except:
-	    self.errorExit()
+        self.processOptions()
 
     #---------------------------------------------------------
     def processOptions(self):
-        pass
+        from TRead import TRead
+        if self.ninputs > 0:
+            self.t1 = TRead(["-f", self.options.in1])
 
-    #---------------------------------------------------------
-    # Open all input and output files.
-    #
-    def openFiles(self):
-        self.t1 = TableFileIterator(self.options.file1)
-	self.t1.setCommentChar(self.options.com1)
-	self.t1.setSeparatorChar(self.options.sep1)
-        if self.ninputs==2:
-	    self.t2 = TableFileIterator(self.options.file2)
-            self.t2.setCommentChar(self.options.com2)
-            self.t2.setSeparatorChar(self.options.sep2)
-	if self.options.outFile and self.options.outFile != "-":
-	    self.ofd = open(self.options.outFile, 'w')
-	if self.options.logFile:
-	    self.lfd = open(self.options.logFile, 'a')
-	    sys.stderr = self.lfd
-	self.t1.setLogFile(self.lfd)
-	if self.ninputs==2 and self.options.file2:
-	    self.t2.setLogFile(self.lfd)
-
-    #---------------------------------------------------------
-    def setLogFile(self, file):
-	if type(file) is types.StringType:
-	    self.lfd = open( file, 'a' )
-        else:
-	    self.lfd = file
-
-    #---------------------------------------------------------
-    def closeFiles(self):
-    	self.t1.close()
-	if(self.t2 is not None):
-	    self.t2.close()
-	if(self.ofd is not None):
-	    self.ofd.close()
+        if self.ninputs > 1:
+            self.t2 = TRead(["-f", self.options.in2])
 
     #---------------------------------------------------------
     # Prints exception info, then dies.
@@ -223,15 +170,4 @@ class TableTool:
 	    val = string.join(val, ",")
 	val=re.split("[, ]+", val)
 	return map(int, filter(None,val))
-
-    #---------------------------------------------------------
-    # Write the row to the output file.
-    #
-    def writeOutput(self, row, fd=None):
-	if fd is None:
-	    fd = self.ofd
-	if fd is self.ofd:
-	    self.nOutputRows += 1
-	fd.write(string.join(map(str,row),TAB))
-	fd.write(NL)
 

@@ -52,13 +52,13 @@ OPTIONS:
 '''
 #----------------------------------------------------------------------
 #
-from BinaryTableTool import BinaryTableTool
+from TableTool import TableTool
 from common import *
 
-class TJoin( BinaryTableTool ):
+class TJoin( TableTool ):
     USAGE=__doc__
     def __init__(self,argv):
-	BinaryTableTool.__init__(self)
+	TableTool.__init__(self,2)
 
 	self.jcols1 = []
 	self.jcols2 = []
@@ -76,6 +76,8 @@ class TJoin( BinaryTableTool ):
 
     #---------------------------------------------------------
     def initArgParser(self):
+
+	TableTool.initArgParser(self)
 
 	self.parser.add_option("--k1", dest="j1", 
 	    action="append", default = [],
@@ -117,10 +119,10 @@ class TJoin( BinaryTableTool ):
 	    action="store", default = "", metavar="NULLSTR",
 	    help="Specifies string to use for NULL values output but left/right outer joins. (Default: empty string)")
 
-	BinaryTableTool.initArgParser(self)
     #---------------------------------------------------------
     #
     def processOptions(self):
+	TableTool.processOptions(self)
 	if len(self.options.j1) > 0:
 	    self.jcols1 = self.parseIntList(self.options.j1)
 	if len(self.options.j2) > 0:

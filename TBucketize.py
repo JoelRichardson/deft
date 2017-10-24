@@ -14,7 +14,7 @@ outer-join...see tj.)
 '''
 #
 #----------------------------------------------------------------------
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 
 BUCKETS = [
@@ -27,10 +27,10 @@ BUCKETS = [
 	]
 #----------------------------------------------------------------------
 #
-class TBucketize( UnaryTableTool ):
+class TBucketize( TableTool ):
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.kcols1 = []
 	self.kcols2 = []
 	self.rows = []
@@ -40,6 +40,7 @@ class TBucketize( UnaryTableTool ):
 
     #---------------------------------------------------------
     def initArgParser(self):
+	TableTool.initArgParser(self)
 	self.parser.add_option("--k1", dest="k1", 
 	    action="append", default = [],
 	    metavar="COLUMN(S)",
@@ -54,33 +55,13 @@ class TBucketize( UnaryTableTool ):
 	    action="store", default = "", metavar="NULLSTR",
 	    help="Specifies string for null values. (Default: empty string)")
 
-	UnaryTableTool.initArgParser(self)
-
-
-    #---------------------------------------------------------
-    def xopenFiles(self):
-	UnaryTableTool.openFiles(self)
-	if self.options.template is None:
-	    for b in BUCKETS:
-		self.bucketFiles[b] = sys.stdout
-
-	elif "%s" not in self.options.template:
-	    # no %s in the template. The template is a constant.
-	    # Write all to that file.
-	    bfname = os.path.join( self.options.outDir, self.options.template )
-	    fd = open( bfname, 'w')
-	    for b in BUCKETS:
-		self.bucketFiles[b] = fd
-
-	else:
-	    # open file for each bucket.
-	    for b in BUCKETS:
-		bfname = os.path.join( self.options.outDir, self.options.template % b )
-		self.bucketFiles[b] = open(bfname, 'w')
 
     #---------------------------------------------------------
     #
     def processOptions(self):
+        #
+        TableTool.processOptions(self)
+
 	if len(self.options.k1) > 0:
 	    self.kcols1 = self.parseIntList(self.options.k1)
 	if len(self.options.k2) > 0:

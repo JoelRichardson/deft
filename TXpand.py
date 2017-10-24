@@ -15,28 +15,34 @@ contains the j-th list element from each of the expanded
 columns. 
 '''
 #----------------------------------------------------------------------
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 
 DEFAULT_PSS='[,]'
 
 #----------------------------------------------------------------------
 #
-class TXpand ( UnaryTableTool ) :
+class TXpand ( TableTool ) :
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.xpColumns = [] # list (col,pref,sep,suff)
 	self.parseCmdLine(argv)
 
     #---------------------------------------------------------
     def initArgParser(self):
+	TableTool.initArgParser(self)
 	self.parser.add_option("-x", "--expand", 
 	    action="append", dest="xpSpecs", default=[], 
 	    metavar="COL[:PSS]",
 	    help="Expand column COL. " + \
 		"Use PSS as prefix/sep/suffix (Optional. Default=','). ")
-	UnaryTableTool.initArgParser(self)
+
+    #---------------------------------------------------------
+    def processOptions(self):
+        TableTool.processOptions(self)
+	for spec in self.options.xpSpecs:
+	    self.processXspec(spec)
 
     #---------------------------------------------------------
     def processXspec(self, spec):
@@ -72,11 +78,6 @@ class TXpand ( UnaryTableTool ) :
 	    self.suffix = pss[2]
 
 	self.xpColumns.append( (col,self.prefix,self.separator,self.suffix) )
-
-    #---------------------------------------------------------
-    def processOptions(self):
-	for spec in self.options.xpSpecs:
-	    self.processXspec(spec)
 
     #---------------------------------------------------------
     # Parses a string encoded list into an actual list.

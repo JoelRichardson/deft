@@ -48,7 +48,7 @@ OUTPUT
 
 '''
 #----------------------------------------------------------------------
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 #----------------------------------------------------------------------
 #
@@ -73,10 +73,10 @@ _STAT_FUNCS = [SUM,SUMSQ,MIN,MAX,MEAN,AVG]
 _ALL_FUNCS = [COUNT,LIST,FIRST,LAST] + _STAT_FUNCS
 
 #----------------------------------------------------------------------
-class TAggregate( UnaryTableTool) :
+class TAggregate( TableTool) :
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.maxColIndex = 0
 	self.currentLine = None
 	self.currentLineNum = 0
@@ -97,6 +97,8 @@ class TAggregate( UnaryTableTool) :
     # assigned to self.options and self.args, resp.
     #
     def initArgParser(self):
+	TableTool.initArgParser(self)
+
 	self.parser.add_option("-g", "--group-by", 
 	    metavar="COLUMN(S)",
 	    action="append", dest="groupByColumns", default=[], 
@@ -111,15 +113,19 @@ class TAggregate( UnaryTableTool) :
 	    action="store_true", dest="streamMode", default=False, 
 	    help=STREAMHELP)
 
-	UnaryTableTool.initArgParser(self)
 
     #---------------------------------------------------------
     def processOptions(self):
+        #
+        TableTool.processOptions(self)
+
 	# group-by columns
 	#
 	for g in self.options.groupByColumns:
 	    self.addGroupByColumn(g)
 
+        # aggregation ops
+        #
 	for a in self.options.aggSpecs:
 	    self.addAggregation(a)
 

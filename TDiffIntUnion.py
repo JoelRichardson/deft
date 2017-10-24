@@ -3,13 +3,13 @@
 # tdiu.py
 #
 #----------------------------------------------------------------------
-from BinaryTableTool import BinaryTableTool
+from TableTool import TableTool
 from common import *
 #----------------------------------------------------------------------
 #
-class TDiffIntUnion( BinaryTableTool ):
+class TDiffIntUnion( TableTool ):
     def __init__(self,argv):
-	BinaryTableTool.__init__(self)
+	TableTool.__init__(self,2)
 	self.kcols1 = []
 	self.kcols2 = []
 	self.t2Keys = {}
@@ -17,6 +17,7 @@ class TDiffIntUnion( BinaryTableTool ):
 
     #---------------------------------------------------------
     def initArgParser(self):
+	TableTool.initArgParser(self)
 	self.parser.add_option("--k1", dest="k1", 
 	    action="append", default = [],
 	    metavar="COLUMN(S)",
@@ -27,11 +28,11 @@ class TDiffIntUnion( BinaryTableTool ):
 	    metavar="COLUMN(S)",
 	    help="Specifies key column(s) for table T2.")
 
-	BinaryTableTool.initArgParser(self)
 
     #---------------------------------------------------------
     #
     def processOptions(self):
+	TableTool.processOptions(self)
 	if len(self.options.k1) > 0:
 	    self.kcols1 = self.parseIntList(self.options.k1)
 	if len(self.options.k2) > 0:

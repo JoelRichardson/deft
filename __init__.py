@@ -10,9 +10,11 @@ from TFilter       import TFilter
 from TIntersection import TIntersection
 from TJoin         import TJoin
 from TPartition    import TPartition
+from TRead         import TRead
 from TSort         import TSort
 from TUnion        import TUnion
 from TXpand        import TXpand
+#from TWrite        import TWrite
 
 #----------------------------------------------------------------------
 # Maps string to operator classes
@@ -27,6 +29,7 @@ OPERATION_MAP = {
     'ti' : TIntersection,
     'tj' : TJoin,
     'tp' : TPartition,
+    'tr' : TRead,
     'ts' : TSort,
     'tu' : TUnion,
     'tx' : TXpand,
@@ -41,7 +44,7 @@ def die(message = None, exitCode = -1):
 def buildPipeline(args):
     if len(args) == 0:
         die("No arguments.")
-    # Subdivide arg list in sublists split by pipes
+    # Subdivide args into sublists split by pipes
     stages = []
     cstage = []
     for a in args:
@@ -66,9 +69,9 @@ def buildPipeline(args):
         opObj = opClass(opArgs)
         # For stages after the first, plug the previous tool into its input
         if prev:
-            if opObj.options.file1 == "-":
+            if opObj.options.in1 == "-":
                 opObj.t1 = prev
-            elif opObj.nInputs == 2 and opObj.options.file2 == "-":
+            elif opObj.nInputs == 2 and opObj.options.in2 == "-":
                 opObj.t2 = prev
         pipeline.append(opObj)
         prev = opObj
@@ -77,6 +80,6 @@ def buildPipeline(args):
 def interpretCommandLine(args):
     pipeline = buildPipeline(args)
     ttobj = pipeline[-1]
-    for row in ttobj.go():
+    for row in ttobj:
       if row:
         print '\t'.join(map(str,row))

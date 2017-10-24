@@ -10,27 +10,28 @@ Sorts a table based on column(s) and sort direction(s).
 #
 #----------------------------------------------------------------------
 #
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 
-class TSort ( UnaryTableTool ) :
+class TSort ( TableTool ) :
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.rows = []
 	self.parseCmdLine(argv)
 
     #---------------------------------------------------------
     def initArgParser(self):
+	TableTool.initArgParser(self)
 	self.parser.add_option("-k", dest="sortKeys", 
 	    action="append", default = [],
 	    metavar="COL[:r]",
 	    help="Specifies column to sort on , with optional 'r' specifying " +\
 	         "to reverse the sort order. Repeatible, for specifying multilevel sort.")
-	UnaryTableTool.initArgParser(self)
 
     #---------------------------------------------------------
     def processOptions(self):
+	TableTool.processOptions(self)
 	nsk = []
 	for skey in self.options.sortKeys:
 	    reverse=False

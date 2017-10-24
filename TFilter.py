@@ -58,17 +58,17 @@ EXAMPLE:
     not 0/empty/null/False, it outputs a row containing
     column 1 and the product of columns 3 and 4.
 '''
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 
-class TFilter ( UnaryTableTool ) :
+class TFilter ( TableTool ) :
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.parseCmdLine(argv)
 
     def initArgParser(self):
-        UnaryTableTool.initArgParser(self)
+        TableTool.initArgParser(self)
 
 	self.parser.add_option("--exec-file", dest="execFile", default=None,
 	    action="store",
@@ -88,6 +88,7 @@ class TFilter ( UnaryTableTool ) :
     # additional options. 
     #
     def processOptions(self):
+        TableTool.processOptions(self)
 	self.loadExprs()
 
     #---------------------------------------------------------

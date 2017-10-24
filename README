@@ -1,15 +1,4 @@
 
-TAggregate
-TBucketize
-TClosure
-TDifference
-TFilter
-TIntersection
-TJoin
-TPartition
-TSort
-TUnion
-TXpand
+deft - delimited file tools
 
-TableTool
-TableFileIterator
+A toolkit of modules for operating on delimited (e.g. tab delimited) files.

@@ -10,13 +10,13 @@ on substituting a column value into a name template.
 # 
 #----------------------------------------------------------------------
 #
-from UnaryTableTool import UnaryTableTool
+from TableTool import TableTool
 from common import *
 
-class TPartition( UnaryTableTool ):
+class TPartition( TableTool ):
     USAGE=__doc__
     def __init__(self,argv):
-	UnaryTableTool.__init__(self)
+	TableTool.__init__(self,1)
 	self.pcols = []
 	self.fname2ofd = {}
 	self.pval2fname = {}
@@ -24,6 +24,7 @@ class TPartition( UnaryTableTool ):
 
     #---------------------------------------------------------
     def initArgParser(self):
+	TableTool.initArgParser(self)
 	self.parser.add_option("-p", dest="pcol", 
 	    action="store", default = None, type="int",
 	    metavar="COLUMN",
@@ -54,11 +55,11 @@ like "./mygffdata.chr%s.gff3".
 If true, the partition operator passes all input rows to its output. This allows a pipeline to
 continue after a partitioning operator.
 ''')
-	UnaryTableTool.initArgParser(self)
 
     #---------------------------------------------------------
     #
     def processOptions(self):
+	TableTool.processOptions(self)
         if self.options.tmplt is None:
             self.parser.error("No filename template specified.")
         if "%s" in self.options.tmplt and self.options.pcol is None:
