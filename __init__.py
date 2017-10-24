@@ -81,6 +81,9 @@ def buildPipeline(args):
 def interpretCommandLine(args):
     pipeline = buildPipeline(args)
     ttobj = pipeline[-1]
+    if ttobj.__class__ is not TWrite:
+        tw = TWrite(["-o", "-"])
+        tw.in1 = ttobj
+        ttobj = tw
     for row in ttobj:
-      if row:
-        print '\t'.join(map(str,row))
+        pass
