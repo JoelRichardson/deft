@@ -45,32 +45,27 @@ import time
 from common import *
 
 #------------------------------------------------------------
-NL	= "\n"
-TAB	= "\t"
-SP	= " "
-COLON	= ":"
-HASH	= "#"
-
-#------------------------------------------------------------
 # Superclass of all the command-line tools in this library.
 # (The one exception is fjoin, which was developed independently.)
 #
 class TableTool:
     USAGE="usage: %prog [options] expression expression ... < input > output"
+    COUNT=0
     def __init__(self, ninputs, argv):
+        self.id = TableTool.COUNT
+        TableTool.COUNT += 1
+        #print "Created %s(%d)" % (self.__class__.__name__, self.id)
+
 	self.parser = OptionParser(self.USAGE)
+	self.ninputs = ninputs
+
 	self.args = None
 	self.options = None
-	self.nOutputRows = 0
-	self.functionContext = {}
-	self.functions = []
-	self.isFilter = []
-	self.ninputs = ninputs
 
 	self.t1 = None
 	self.t2 = None
 
-	self.lfd = sys.stderr	# log file
+	self.lfd = sys.stderr	# for log messages
 
         #
 	self.initArgParser()
@@ -90,18 +85,25 @@ class TableTool:
                 metavar="SRC",
                 help="Specifies input source. Default='-' (read from stdin).")
 
-	self.parser.add_option("-l", "--log-file", dest="logFile", default=None,
-	    metavar="FILE",
-	    help="Specifies log file [default=write to stderr]")
+        if self.ninputs > 1:
+            self.parser.add_option("-2", dest="in2", default="-",
+                metavar="SRC",
+                help="Specifies second input source. Default='-' (read from stdin).")
 
     #---------------------------------------------------------
     def processOptions(self):
-        from TRead import TRead
         if self.ninputs > 0:
-            self.t1 = TRead(["-f", self.options.in1])
-
+            from TRead import TRead
+            if type(self.options.in1) is types.StringType:
+                self.t1 = TRead(["-f", self.options.in1])
+            else:
+                self.t1 = self.options.in1
         if self.ninputs > 1:
-            self.t2 = TRead(["-f", self.options.in2])
+            if type(self.options.in2) is types.StringType:
+                self.t2 = TRead(["-f", self.options.in2])
+            else:
+                self.t2 = self.options.in2
+
 
     #---------------------------------------------------------
     # Prints exception info, then dies.

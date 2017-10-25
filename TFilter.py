@@ -64,6 +64,9 @@ from common import *
 class TFilter ( TableTool ) :
     USAGE=__doc__
     def __init__(self,argv):
+	self.functionContext = {}
+	self.functions = []
+	self.isFilter = []
 	TableTool.__init__(self,1,argv)
 
     def initArgParser(self):

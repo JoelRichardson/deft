@@ -25,6 +25,7 @@ class TRead(TableTool):
 	self.currentRowNum = 0
         #
         TableTool.__init__(self, 0,argv)
+        #
 
     #---------------------------------------------------------
     def initArgParser(self):

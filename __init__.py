@@ -36,54 +36,84 @@ OPERATION_MAP = {
     'tw' : TWrite,
     }
 
+def log(message):
+    sys.stderr.write(message)
+
 def die(message = None, exitCode = -1):
     if message is not None:
-        sys.stderr.write(message)
-        sys.stderr.write(NL)
+        log(message)
+        log(NL)
     sys.exit(exitCode)
 
-def buildPipeline(args):
-    if len(args) == 0:
-        die("No arguments.")
-    # Subdivide args into sublists split by pipes
-    stages = []
-    cstage = []
-    for a in args:
-        if a in ["|","--pipe"]:
-            if len(cstage) == 0:
-                die("No arguments in pipe stage.")
-            stages.append(cstage)
-            cstage = []
+def buildPipeline(tokens):
+    if len(tokens) == 0:
+        return None
+    #
+    def addSeg(p, pclass, pargs):
+        p2 = pclass(pargs)
+        if p:
+            if p2.ninputs > 0 and p2.options.in1 == "-":
+                p2.t1 = p
+            elif p2.ninputs > 1 and p2.options.in2 == "-":
+                p2.t2 = p
+        pargs[:] = []
+        return p2
+    #
+    pclass = None
+    p = None
+    pargs = []
+    i = 0
+    stack = []
+    while i < len(tokens):
+        t = tokens[i]
+        if t == "(":
+            stack.append((pclass, p, pargs, i))
+            pclass = None
+            p = None
+            pargs = []
+        elif t == ")":
+            pp = addSeg(p, pclass, pargs)
+            (pclass, p, pargs, j) = stack.pop()
+            pargs.append(pp)
+        elif t == "|":
+            p = addSeg(p, pclass, pargs)
+        elif i==0 or tokens[i-1] in ["(","|"]:
+            pclass = OPERATION_MAP.get(t,None)
+            if pclass is None: die("Unknown operator specified: " + t)
         else:
-            cstage.append(a)
-    stages.append(cstage)
+            pargs.append(t)
+        i = i + 1
 
-    # At this point, stages is a list of lists.
-    # Each inner list consists of an operator followed by its parameters
-    prev = None
-    pipeline = []
-    for stage in stages:
-        op = stage[0]
-        opArgs = stage[1:]
-        # create the TableTool instance
-        opClass = OPERATION_MAP[op]
-        opObj = opClass(opArgs)
-        # For stages after the first, plug the previous tool into its input
-        if prev:
-            if opObj.options.in1 == "-":
-                opObj.t1 = prev
-            elif opObj.nInputs == 2 and opObj.options.in2 == "-":
-                opObj.t2 = prev
-        pipeline.append(opObj)
-        prev = opObj
-    return pipeline
+    p=addSeg(p, pclass, pargs)
+    #
+    return p
+
+def pp(p, d=0):
+    indent = "  "*d
+    print indent, "%s(%d)"%(p.__class__.__name__, p.id)
+    if p.ninputs == 0:
+        print indent, "f=", p.options.filename
+        if type(p.options.filename ) is not types.StringType:
+            print indent, "Huh."
+            pp(p.options.filename, d+1)
+    if p.ninputs > 0:
+        print indent, "t1="
+        pp(p.t1, d+1)
+    if p.ninputs > 1:
+        print indent, "t2="
+        pp(p.t2, d+1)
+
 
 def interpretCommandLine(args):
-    pipeline = buildPipeline(args)
-    ttobj = pipeline[-1]
+    if type(args) is types.StringType:
+        args = args.strip().split()
+    ttobj = buildPipeline(args)
     if ttobj.__class__ is not TWrite:
         tw = TWrite(["-o", "-"])
-        tw.in1 = ttobj
+        tw.t1 = ttobj
         ttobj = tw
+
+    #pp(ttobj)
+
     for row in ttobj:
         pass
