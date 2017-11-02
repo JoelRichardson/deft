@@ -38,9 +38,9 @@ EVALUATION:
     The following names are defined and can be used within
     an expression:
      
-    IN	the current input row. This is a list containing
+    r	the current input row. This is a list containing
         the values from each column. The ith column's
-        value is written: IN[i]. Column numbers start
+        value is written: r[i]. Column numbers start
         at 0. 
 
     string	the Python string ligrary
@@ -49,10 +49,10 @@ EVALUATION:
 
     math	the Python math library
 
-    all the __builtin__ functions
+    all the __builtin__ Python functions
 
 EXAMPLE:
-    ... | tf ?IN[2] IN[1] IN[3]*IN[4] | ...
+    ... | tf ?r[2] r[1] r[3]*r[4] | ...
 
     Reads table from stdin. For those rows where column[2] is
     not 0/empty/null/False, it outputs a row containing
@@ -134,26 +134,18 @@ class TFilter ( TableTool ) :
 	    noGenerators = noGenerators and isf
 
 	if noGenerators:
-	    if self.ninputs==1:
-		self.functions.append( \
-		    self.makeFunction( "IN" ) )
-		self.isFilter.append( False )
-	    elif self.ninputs==2:
-		self.functions.append( \
-		    self.makeFunction( "IN1+IN2" ) )
-		self.isFilter.append( False )
+            self.functions.append( \
+                self.makeFunction( "r" ) )
+            self.isFilter.append( False )
 
     #---------------------------------------------------------
     # Given a string expression, returns a callable object that
-    # evaluates it. The arguments to the function are IN1 and IN2. 
+    # evaluates it. 
     #
     def makeFunction(self, expr):
 	if expr[0] == '?':
 	    expr = 'bool(' + expr[1:] + ')'
-	if self.ninputs == 1:
-	    s = "lambda IN: " + expr
-	elif self.ninputs == 2:
-	    s = "lambda IN1, IN2: " + expr
+        s = "lambda r: " + expr
 	return eval(s, self.functionContext)
 
     #---------------------------------------------------------
