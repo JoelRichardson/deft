@@ -1,4 +1,4 @@
 
-deft - delimited file tools
+deft - Delimited File Tools
+Deft is a collection of Python tools for working with delimited tabular files.
 
-A toolkit of modules for operating on delimited (e.g. tab delimited) files.
