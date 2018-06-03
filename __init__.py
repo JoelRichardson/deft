@@ -1,7 +1,6 @@
 import sys
 
 from common        import *
-from FJoin         import FJoin
 from TAggregate    import TAggregate
 from TBucketize    import TBucketize
 from TClosure      import TClosure
@@ -20,7 +19,6 @@ from TWrite        import TWrite
 # Maps string to operator classes
 #
 OPERATION_MAP = {
-    'fj' : FJoin,
     'ta' : TAggregate,
     'tb' : TBucketize,
     'tc' : TClosure,
